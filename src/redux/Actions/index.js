@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export function getAllProducts(){
     return async function(dispatch){
-        let json = await axios.get('http://localhost:3001/products');
+        let json = await axios.get('https://api-movilgates.herokuapp.com/products');
         return dispatch({
             type: 'GET_PRODUCTS',
             payload: json.data
@@ -13,7 +13,7 @@ export function getAllProducts(){
 export function searchName(payload) {
     return async function (dispatch) {
          try {
-            var json = await axios.get("http://localhost:3001/products?name=" + payload)
+            var json = await axios.get("https://api-movilgates.herokuapp.com/products?name=" + payload)
             return dispatch ({
                 type: 'SEARCH_NAME',
                 payload: json.data
@@ -28,7 +28,7 @@ export function searchName(payload) {
 export function getPhonesById(id){
     return async function (dispatch){
         try{
-            let json= await axios.get(`http://localhost:3001/products/phones/${id}`)
+            let json= await axios.get(`https://api-movilgates.herokuapp.com/products/phones/${id}`)
             return dispatch({
                 type: "GET_PHONES_BY_ID",
                 payload: json.data
@@ -41,7 +41,7 @@ export function getPhonesById(id){
 export function getTabletsById(id){
     return async function (dispatch){
         try{
-            let json= await axios.get(`http://localhost:3001/products/tablets/${id}`)
+            let json= await axios.get(`https://api-movilgates.herokuapp.com/products/tablets/${id}`)
             return dispatch({
                 type:"GET_TABLETS_BY_ID",
                 payload:json.data
@@ -55,7 +55,7 @@ export function getTabletsById(id){
 export function getNotebooksById(id){
     return async function (dispatch){
         try{
-            let json= await axios.get(`http://localhost:3001/products/notebooks/${id}`)
+            let json= await axios.get(`https://api-movilgates.herokuapp.com/products/notebooks/${id}`)
             return dispatch({
                 type:"GET_NOTEBOOKS_BY_ID",
                 payload:json.data
