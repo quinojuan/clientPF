@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 export function getAllProducts() {
 	return async function (dispatch) {
 		dispatch(setLoading(true));
-		let json = await axios.get('http://localhost:3001/products');
+		let json = await axios.get('http://localhost:3001/products' || "https://api-movilgates.herokuapp.com/products" );
 		dispatch({
 			type: 'GET_PRODUCTS',
 			payload: json.data,
@@ -24,7 +24,7 @@ export function getPhonesById(id) {
 	return async function (dispatch) {
 		try {
 			dispatch(setLoading(true));
-			let json = await axios.get(`http://localhost:3001/products/${id}`);
+			let json = await axios.get(`http://localhost:3001/products/${id}`  || `https://api-movilgates.herokuapp.com/products/${id}`);
 			dispatch({
 				type: 'GET_PHONES_BY_ID',
 				payload: json.data,
@@ -98,7 +98,7 @@ export function addUser(payload) {
 				email: payload.email,
 				password: payload.password
 			}
-		  await axios.post('http://localhost:3001/users', user);
+		  await axios.post('http://localhost:3001/users' || "https://api-movilgates.herokuapp.com/users", user);
 		}catch(e){
           console.log(e)
 		}
