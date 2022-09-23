@@ -4,7 +4,8 @@ import Swal from 'sweetalert2';
 export function getAllProducts() {
 	return async function (dispatch) {
 		dispatch(setLoading(true));
-		let json = await axios.get('http://localhost:3001/products' || "https://api-movilgates.herokuapp.com/products" );
+		// let json = await axios.get('http://localhost:3001/products');
+		let json = await axios.get("https://api-movilgates.herokuapp.com/products" );
 		dispatch({
 			type: 'GET_PRODUCTS',
 			payload: json.data,
@@ -24,7 +25,7 @@ export function getPhonesById(id) {
 	return async function (dispatch) {
 		try {
 			dispatch(setLoading(true));
-			let json = await axios.get(`http://localhost:3001/products/${id}`  || `https://api-movilgates.herokuapp.com/products/${id}`);
+			let json = await axios.get(`https://api-movilgates.herokuapp.com/products/${id}`);
 			dispatch({
 				type: 'GET_PHONES_BY_ID',
 				payload: json.data,
@@ -98,7 +99,7 @@ export function addUser(payload) {
 				email: payload.email,
 				password: payload.password
 			}
-		  await axios.post('http://localhost:3001/users' || "https://api-movilgates.herokuapp.com/users", user);
+		  await axios.post("https://api-movilgates.herokuapp.com/users", user);
 		}catch(e){
           console.log(e)
 		}
@@ -142,7 +143,7 @@ export const getProductsByNameAndFilters =
 		//BUENA MANERA DE UTILIZAR EL AXIOS
 		const resultado = await axios
 			.get(
-				'http://localhost:3001/products?' +
+				'https://api-movilgates.herokuapp.com/products"?' +
 					'name=' +
 					search.toLowerCase().trim() +
 					filterString
@@ -158,7 +159,7 @@ export const getProductsByNameAndFilters =
 		dispatch(setLoading(false));
 	};
 export const getCategories = () => async (dispatch) => {
-	const resultado = await axios('http://localhost:3001/brands').then(
+	const resultado = await axios('https://api-movilgates.herokuapp.com/brands"').then(
 		(res) => res.data
 	);
 	dispatch({
@@ -167,7 +168,7 @@ export const getCategories = () => async (dispatch) => {
 	});
 };
 export const getRams = () => async(dispatch) => {
-	const json= await axios('http://localhost:3001/rams').then(
+	const json= await axios('https://api-movilgates.herokuapp.com/rams').then(
 		(res)=>res.data
 	);
 	dispatch({
@@ -176,7 +177,7 @@ export const getRams = () => async(dispatch) => {
 	})
 }
 export const getCapacity = () => async(dispatch) => {
-	const json= await axios('http://localhost:3001/capacities').then(
+	const json= await axios('https://api-movilgates.herokuapp.com/capacities"').then(
 		(res)=>res.data
 	);
 	dispatch({
@@ -201,7 +202,7 @@ export const handleClearCart = ()=>{
 }
 export function getPurchase(){
 	return async function (dispatch) {
-        let json = await axios.get("http://localhost:3001/purchases");
+        let json = await axios.get("https://api-movilgates.herokuapp.com/purchases");
         return dispatch({
             type: "GET_PURCHASE",
             payload: json.data
@@ -211,7 +212,7 @@ export function getPurchase(){
 
 export function postPurchase(payload) {
     return async function (dispatch) {
-        const json = await axios.post("http://localhost:3001/purchases", payload)
+        const json = await axios.post("https://api-movilgates.herokuapp.com/purchases", payload)
         return json;
 
     }
