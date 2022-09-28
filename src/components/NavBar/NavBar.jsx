@@ -5,11 +5,12 @@ import { useAuth } from '../Context/authContext';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../Loading/Loading';
 import {handleReload} from '../Home/Home'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SearchBar from '../SearchBar/SearchBar';
-import { getProductsByNameAndFilters, setSearch } from '../../redux/Actions';
+import { getProductsByNameAndFilters, setSearch, addUser } from '../../redux/Actions';
 import Swal from 'sweetalert2';
+
 
 
 export default function NavBar() {
@@ -61,12 +62,17 @@ export default function NavBar() {
   const { user, logout, loading } = useAuth()
   const navigate = useNavigate()
 
+
+  useEffect(()=>{
+    dispatch(addUser(user))
+  },[dispatch])
+
+
   const handleLogout = async () => {
     await logout()
-    navigate('/home/')
-
-    
+    navigate('/home/') 
   }
+   
   function handleReload(e) {
     e.preventDefault();
     window.location.reload();
@@ -85,11 +91,7 @@ export default function NavBar() {
     }
     setCurrentPage(1);
   }
-  if (loading) {
-    return (
-      <div><Loading /></div>
-    )
-  } else if (user) {
+ if (user) {
     return (
       <nav className='container'>
         <div className="navbar fixed-top navbar navbar-expand-lg bg-dark">
@@ -118,7 +120,7 @@ export default function NavBar() {
                   <a className="nav-link active text-white" href="#" onClick={()=> navigate("/products/Cart")}>Carrito 🛒</a>
                 </li>
                 <li className="nav-item">
-                <h3 className='nav-link active text-white'>Hola, {user.email.split('@')[0]}</h3>
+                <h3 className='nav-link active text-white mt-1'>Hola, {user.email.split('@')[0]}</h3>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link active text-white" href="#" onClick={handleLogout}>Cerrar sesión</a>

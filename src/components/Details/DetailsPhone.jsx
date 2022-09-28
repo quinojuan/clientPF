@@ -32,6 +32,7 @@ export default function DetailsPhone(props) {
   }
   return (
     <div>
+      <NavBar/>
       {
         <div>
           <div
@@ -102,9 +103,9 @@ export default function DetailsPhone(props) {
                     </h5>
                     <h5>
                       Precio:{" "}
-                      {myProducts && myProducts.price > 999
+                    {myProducts && myProducts.price > 999
                         ? "$" + parseFloat(myProducts.price / 1000).toFixed(3)
-                        : "$" + myProducts.price}
+                        : "$" + myProducts.price} 
                     </h5>
                     <h5>Peso: {myProducts && myProducts.weight}g.</h5>
                     <h5>
@@ -156,14 +157,17 @@ export default function DetailsPhone(props) {
                 <li><img src="https://source.unsplash.com/nKAglN6HBH8/1600x900" style={{maxWidth: '100%', height: 'auto'}}></img></li>
                 <li><img src="https://source.unsplash.com/E9ZwWcMGzj8/1600x900" style={{maxWidth: '100%', height: 'auto'}}></img></li>
             </ul>
+
             <button type="button" className="slider-nav"></button>
             <button type="button" className="slider-nav slider-nav-next"></button>
+
             <div className="slider-indicators">
                 <button className="active"></button>
                 <button></button>
                 <button></button>
             </div>
 </div>
+
     </div> */}
     </div>
   );

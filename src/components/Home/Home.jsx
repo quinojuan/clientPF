@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
 	getAllProducts,
 	getSort,
@@ -22,9 +22,11 @@ import SearchBar from '../SearchBar/SearchBar';
 import { Link } from 'react-router-dom';
 import Paginado from '../Paginated/Paginated';
 import AddProducts from '../AddProducts/AddProducts';
+import Loading from '../Loading/Loading';
 import './Home.css';
 import Swat from 'sweetalert2';
 import Carousel from '../Carousel/Carousel';
+
 
 export default function Home() {
 	const dispatch = useDispatch();
@@ -51,22 +53,22 @@ export default function Home() {
 		setCurrentPage(pageNumber);
 	};
 
-  useEffect(() => {
-    dispatch(getCart());
-    dispatch(getCategories());
-    dispatch(getRams());
-    dispatch(getCapacity());
-    !currentProducts.length && dispatch(getAllProducts());
-  }, [dispatch]);
+	useEffect(() => {
+		dispatch(getCart());
+		dispatch(getCategories());
+		dispatch(getRams())
+		dispatch(getCapacity())
+		!currentProducts.length && dispatch(getAllProducts());
+	}, [dispatch]);
 
-  useEffect(() => {
-    dispatch(getProductsByNameAndFilters(search, filters));
-  }, [dispatch, filters, search]);
-  const [orden, setOrden] = useState("");
+	useEffect(() => {
+		dispatch(getProductsByNameAndFilters(search, filters));
+	}, [dispatch, filters, search]);
+	const [orden, setOrden] = useState('');
 
-  useEffect(() => {
-    currentProducts.length && setFirstTime(false);
-  }, [currentProducts]);
+	useEffect(() => {
+		currentProducts.length && setFirstTime(false);
+	}, [currentProducts]);
 
 	 function handleReload(e) {
 		e.preventDefault();
@@ -99,7 +101,7 @@ export default function Home() {
 		if (loading) {
 			return (
 				<div>
-					<h1>Loading...</h1>
+					<div><Loading /></div>
 				</div>
 			);
 		} else {
@@ -194,7 +196,7 @@ export default function Home() {
 					<option value="Z-A">Z-A</option>
 				</select>
 				<select
-					class="form-select"
+					class="form-select bg-dark text-light me-2"
 					aria-label="Default select example"
 					onChange={(e) => handleSortByPrice(e)}
 				>
@@ -229,6 +231,7 @@ export default function Home() {
 										key={s.id}
 										to={`/products/${s.id}`}
 									> */}
+									
 										<Cards
 											model={s.model}
 											image={s.image}
@@ -239,6 +242,7 @@ export default function Home() {
 											capacity={s.capacity}
 											price={s.price[0]}
 										/>
+										
 									{/* </Link> */}
 									{/* <AddProducts id={s.id} /> */}
 								</>

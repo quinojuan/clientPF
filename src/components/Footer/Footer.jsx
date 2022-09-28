@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faYouTube } from '@fortawesome/free-brands-svg-icons'
 import "./Footer.css"
 
 export default function NavBar() {
@@ -20,7 +21,8 @@ export default function NavBar() {
             Atención al cliente
           </h5>
           <p>0800-1234-0000</p>
-          <p>consultas@movilgates.com</p>
+          <p>movilgates@gmail.com</p>
+          
         </div>
       </div>
       <div className='col-md-3 d-flex'>
@@ -41,25 +43,28 @@ export default function NavBar() {
       </div>
       <div className='col-md-3 text-center'>
         <h5 className='text-uppercase font-weight-light text-light mb-3'>
-        Términos y Condiciones
+        Siguenos en las redes!
         </h5>
-        <div className=''>
-          <FontAwesomeIcon
+        
+        <i class="bi bi-instagram"></i>
+          <i class="bi bi-whatsapp"></i>
+          <i class="bi bi-github"></i>
+          {/* <FontAwesomeIcon
             icon={['fab', 'facebook']}
             className='h2 mr-4'
             style={{ color: 'DodgerBlue' }}
           />
           <FontAwesomeIcon
-            icon={['fab', 'twitter']}
-            className='h2 mr-4'
+            icon={"fa-brands fa-twitter" }
+            className='h2 me-4'
             style={{ color: 'DodgerBlue' }}
           />
           <FontAwesomeIcon
-            icon={['fab', 'instagram']}
+            icon={'fa-brands fa-instagram'}
             className='h2'
-            style={{ color: 'DodgerBlue' }}
-          />
-        </div>
+            style={{ color: 'DodgerBlue' }} */}
+          
+        
       </div>
       <p class="text-center text-muted text-light">Copyright © 2022 MóvilGates</p>
       <hr/>
