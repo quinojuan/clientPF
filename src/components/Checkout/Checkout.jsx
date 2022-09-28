@@ -32,11 +32,11 @@ const CheckOutForm = () =>{
         if(!error){
             const {id} = paymentMethod
 
-           let purchaseStripe = await axios.post('http://localhost:3001/checkout', {
+           let purchaseStripe = await axios.post('https://api-movilgates.herokuapp.com/checkout', {
                 id,
                 amount: price
         });
-        let dataCheck = await axios.get('http://localhost:3001/checkout');
+        let dataCheck = await axios.get('https://api-movilgates.herokuapp.com/checkout');
           console.log(dataCheck.data, " DATA CHECK")
          
          let estadoGlobal2 = {...estadoGlobal, ...dataCheck.data}
