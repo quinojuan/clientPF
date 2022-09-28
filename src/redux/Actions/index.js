@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 export function getAllProducts() {
 	return async function (dispatch) {
 		dispatch(setLoading(true));
-		let json = await axios.get('http://localhost:3001/products');
+		let json = await axios.get('https://api-movilgates.herokuapp.com/products');
 		dispatch({
 			type: 'GET_PRODUCTS',
 			payload: json.data,
@@ -24,7 +24,7 @@ export function getPhonesById(id) {
 	return async function (dispatch) {
 		try {
 			dispatch(setLoading(true));
-			let json = await axios.get(`http://localhost:3001/products/${id}`);
+			let json = await axios.get(`https://api-movilgates.herokuapp.com/products/${id}`);
 			dispatch({
 				type: 'GET_PHONES_BY_ID',
 				payload: json.data,
@@ -97,7 +97,7 @@ export function addUser(payload) {
 			const newUser = {
 				email: payload.email,
 			}
-		  await axios.post('http://localhost:3001/users', newUser);
+		  await axios.post('https://api-movilgates.herokuapp.com/users', newUser);
 		}catch(e){
           console.log(e)
 		}
@@ -149,13 +149,13 @@ export const getProductsByNameAndFilters =
 		//BUENA MANERA DE UTILIZAR EL AXIOS
 		const resultado = await axios
 			.get(
-				'http://localhost:3001/products?' +
+				'https://api-movilgates.herokuapp.com/products?' +
 					'name=' +
 					search.toLowerCase().trim() +
 					filterString
 			)
-			//'http://localhost:3001/products?' +'name=' +search.toLowerCase().trim() +filterString
-			//http://localhost:3001/products?name=+&ram=&category=Tablets&capacity= EJEMPLO
+			//'https://api-movilgates.herokuapp.com/products?' +'name=' +search.toLowerCase().trim() +filterString
+			//https://api-movilgates.herokuapp.com/products?name=+&ram=&category=Tablets&capacity= EJEMPLO
 			.then((res) => res.data);
 		dispatch({
 			type: 'GET_PRODUCTS_BY_NAME_AND_FILTERS',
@@ -165,7 +165,7 @@ export const getProductsByNameAndFilters =
 		dispatch(setLoading(false));
 	};
 export const getCategories = () => async (dispatch) => {
-	const resultado = await axios('http://localhost:3001/brands').then(
+	const resultado = await axios('https://api-movilgates.herokuapp.com/brands').then(
 		(res) => res.data
 	);
 	dispatch({
@@ -174,7 +174,7 @@ export const getCategories = () => async (dispatch) => {
 	});
 };
 export const getRams = () => async(dispatch) => {
-	const json= await axios('http://localhost:3001/rams').then(
+	const json= await axios('https://api-movilgates.herokuapp.com/rams').then(
 		(res)=>res.data
 	);
 	dispatch({
@@ -183,7 +183,7 @@ export const getRams = () => async(dispatch) => {
 	})
 }
 export const getCapacity = () => async(dispatch) => {
-	const json= await axios('http://localhost:3001/capacities').then(
+	const json= await axios('https://api-movilgates.herokuapp.com/capacities').then(
 		(res)=>res.data
 	);
 	dispatch({
@@ -208,7 +208,7 @@ export const handleClearCart = ()=>{
 }
 export function getPurchase(){
 	return async function (dispatch) {
-        let json = await axios.get("http://localhost:3001/purchases");
+        let json = await axios.get("https://api-movilgates.herokuapp.com/purchases");
         return dispatch({
             type: "GET_PURCHASE",
             payload: json.data
@@ -219,7 +219,7 @@ export function getPurchase(){
 export function postPurchase(payload) {
     return async function (dispatch) {
 		console.log(payload, "ACTION DE POSTPURCHASE")
-        const purchase = await axios.post("http://localhost:3001/purchases", payload)
+        const purchase = await axios.post("https://api-movilgates.herokuapp.com/purchases", payload)
         return purchase
 
     }
@@ -256,7 +256,7 @@ export function setFinalPrice(payload){
 
 export function postPhone(payload) {
     return async function (dispatch) {
-        const newPhone = await axios.post("http://localhost:3001/products", payload)
+        const newPhone = await axios.post("https://api-movilgates.herokuapp.com/products", payload)
         return newPhone
     }
 }
