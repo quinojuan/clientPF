@@ -13,7 +13,28 @@ export default function Cards({
   capacity,
   category,
   id,
-}) {
+}) 
+{
+function acomodarPrecio(precio) {
+    let precioString = precio.toString();
+    let contador = 0;
+    let acumulador = [];
+    let acumuladorInvertido = []
+    for (let i = precioString.length - 1; i >= 0; i--) {
+      contador++;
+      if (contador === 3 && i>0) {
+        acumuladorInvertido.push(precioString[i]);
+        acumuladorInvertido.push(".");
+        contador = 0
+      } else {
+        acumuladorInvertido.push(precioString[i]);
+      }
+    }
+    for(let i=acumuladorInvertido.length - 1; i>=0;i--){
+      acumulador.push(acumuladorInvertido[i])
+    }
+    return acumulador.join("");
+  }
   return (
     // <div class="card" style="width: 18rem;">
     //  <img src={image} class="card-img-top" alt='img not found'/>
@@ -39,15 +60,13 @@ export default function Cards({
         <button className="stock">EN STOCK</button>
         <div class="card-body text-light">
           <h5 class="card-title text-decoration-none">
-            {brand} 
+            {model} 
           </h5>
           <h6 class="lead">
           {inches + '" - '} {operative_system + ' -'} {capacity<10 ? capacity + "TB" : capacity + "GB"}
           </h6>
           <div class="card-title">
-            <h3>{price > 999
-                        ? "$" + parseFloat(price / 1000).toFixed(3)
-                        : "$" + price}</h3>
+            <h3>${acomodarPrecio(price)}</h3>
           </div>
         </div>
       </div>
