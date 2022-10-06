@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getPhonesById, getClean } from "../../redux/Actions";
+import { getPhonesById, getClean, getFeedbacks } from "../../redux/Actions";
 import { useParams } from "react-router-dom";
 import NavBar from "../NavBar/NavBar";
 import Footer from "../Footer/Footer";
@@ -9,7 +9,29 @@ import AddProducts from "../AddProducts/AddProducts";
 import { useNavigate } from "react-router-dom";
 import loadingPng from "../../images/Loading.png";
 import Feedback from "../Feedbacks/Feedbacks";
-import { useAuth } from '../Context/authContext';
+import Questions from "../Qas/Questions";
+import { Link } from "react-router-dom";
+import Qas from "../Qas/Qas"
+import PhoneFeedbacks from "../Feedbacks/PhoneFeedbacks"
+import './DetailsPhone.css'
+
+
+const wrapper = {
+  maxWidth: '1000px',
+  width: '100%',
+  border: '1px solid #333',
+  margin: '30px auto',
+  padding: '20px',
+}
+const wrapperContent = {
+  display: 'flex',
+  justifyContent: 'space-evenly',
+  alignItems: 'center',
+}
+const image = {
+  maxWidth: '500px',
+  width: '100%',
+}
 
 export default function DetailsPhone(props) {
   const navigate = useNavigate();
@@ -17,16 +39,13 @@ export default function DetailsPhone(props) {
   const { id } = useParams();
   const myProducts = useSelector((state) => state.details);
   const [img, setImg] = useState("");
-  const [count, setCount]= useState(1)
-  const { user } = useAuth()
-    function decrease(){
-        setCount(count-1)
-    }
-    function increase(){
-        setCount(count+1)
-    }
-
-
+  const [count, setCount] = useState(1);
+  const usuarioLogeado = useSelector((state) => state.loggedUser);
+  const feedbacks = useSelector((state) => state.allFeedbacks);
+  const cantidad = useSelector(state=>state.cantidad)
+  const allProducts = useSelector(state => state.products)
+  const myProductWithBrand = allProducts.filter((e)=> e.id == id)
+  let myFeed = feedbacks.filter((e)=> e.product === myProducts.model)
   function decrease() {
     setCount(count - 1);
   }
@@ -42,14 +61,17 @@ export default function DetailsPhone(props) {
     dispatch(getClean());
     navigate("/home");
   }
-  
+
+  useEffect(() => {
+    dispatch(getFeedbacks());
+  }, [dispatch]);
 
   function handleSelectImage(e) {
     e.preventDefault();
     setImg(e.target.src);
   }
   function acomodarPrecio(precio) {
-    //console.log("precio:", precio);
+    precio = precio?precio:"0000";
     let precioString = precio.toString();
     let contador = 0;
     let acumulador = [];
@@ -69,139 +91,190 @@ export default function DetailsPhone(props) {
     }
     return acumulador.join("");
   }
+
+  let stock_quantity = myProducts.stock
+
+  var isOutOfStock = false
+
+  const handlePromedio = () => {
+    let suma = 0
+    for(let i = 0; i<myFeed.length; i++){
+      suma += myFeed[i].points
+    }
+    let total = suma/myFeed.length
+    return total
+  }
+
+  if (stock_quantity === 0) {
+    isOutOfStock = true
+  }
+
+  function renderBrand (){
+    return myProductWithBrand[0]? myProductWithBrand[0].brand : 'loading'
+  }
   return (
     <div>
-      <NavBar />
-      {
-        <div>
-          <div
-            className="container"
-            style={{
-              maxWidth: "540px",
-              alignItems: "center",
-              display: "flex",
-              position: "relative",
-            }}
-          >
-            <div
-              class="card mb-3"
-              style={{
-                maxWidth: "540px",
-                alignItems: "center",
-                display: "flex",
-                position: "relative",
-              }}
-            >
-              <div class="row g-0">
-                <div class="col-md-4">
+    <NavBar />
+        <div style={wrapper} class="mt-5" >
+          <h3 className='d-flex text-black-50'>{renderBrand()}: {myProducts.model}</h3>
+          <hr />
+          <div>
+          
                   {img ? (
                     <img
-                      src={img}
-                      alt="Not found"
-                      width="200px"
-                      height="250px"
+                    src={img.includes("http") ? img : `data:image/jpeg;base64,${img}`}
+                    alt="Not found"
+                    style={image}
+                    // width="200px"
+                    // height="250px"
                     ></img>
-                  ) : (
-                    <img
+                    ) : (
+                      <img
                       src={loadingPng}
                       alt="no loading img founded"
-                      width="200px"
-                      height="250px"
-                    />
-                  )}
-                </div>
-                <div class="col-md-8">
-                  <div class="card-body">
-                    <h1 class="card-title">{myProducts && myProducts.brand}</h1>
-                    <h1 class="card-title">{myProducts && myProducts.model}</h1>
-                    <h5 class="card-text">
-                      Capacidad:{" "}
-                      {myProducts && Number(myProducts.capacity) < 10
-                        ? myProducts.capacity + "TB"
-                        : myProducts.capacity + "GB"}
-                    </h5>
-                    <h5>
-                      Sistema operativo:{" "}
-                      {myProducts && myProducts.operative_system}
-                    </h5>
-                    <h5>CPU: {myProducts && myProducts.cpu}.</h5>
-                    <h5>
-                      Memoria RAM:{" "}
-                      {myProducts &&
-                        myProducts.ram?.map((e) => " " + e + "GB.")}
-                    </h5>
-                    <h5>Dimensiones: {myProducts && myProducts.size}</h5>
-                    <h5>Tamaño: {myProducts && myProducts.inches}''.</h5>
-                    <h5>
-                      Camara principal: {myProducts && myProducts.main_camera}
-                      MPx.
-                    </h5>
-                    <h5>
-                      Camara frontal: {myProducts && myProducts.frontal_camera}
-                      Mpx.
-                    </h5>
-                    <h5>
-                      Precio:{" $"}
-                      {myProducts.weight
-                        ? acomodarPrecio(myProducts.price)
-                        : null}
-                    </h5>
-                    <h5>
-                      Peso:{" "}
-                      {myProducts.weight
-                        ? acomodarPrecio(myProducts.weight)
-                        : null}
-                      g.
-                    </h5>
-                    <h5>
-                      Capacidad de la bateria:
-                      {myProducts.battery
-                        ? acomodarPrecio(myProducts.battery)
-                        : null}
-                      mAh.
-                    </h5>
+                      // width="200px"
+                      // height="250px"
+                      />
+                      )}
+                {/* </div> */}
+                <div className='p-3'>
+                <h3 className='display-3'>${acomodarPrecio(myProducts.price)}</h3>
+                
+          <hr />
+            <p className='lead'>{myProducts.description}</p>
+            <div>
 
-                    <h6 class="card-text">
-                      {myProducts && myProducts.description}{" "}
-                    </h6>
-
-                    <h4> Otros colores: </h4>
-                    {myProducts &&
-                      myProducts.colors?.map((e) => (
-                        <img
-                          src={e}
-                          alt="img not fund"
-                          height="50px"
-                          width="30px"
-                          onClick={(e) => handleSelectImage(e)}
-                        />
-                      ))}
-                  </div>
-                </div>
-              </div>
+Stock:
+{isOutOfStock ? (
+  <div className='out-stock-style'>
+    <h4>Sin Stock</h4>
+  </div>
+) : (
+  <div className='in-stock'>
+    <h4>Quedan {myProducts.stock} en stock</h4>
+  </div>
+)}
+</div>   
+          <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+            <button type="button" class="btn btn-outline-dark" disabled={count <= 1} onClick={() => decrease()}>-</button>
+            <span class="fs-3 px-3">{myProducts.stock?count:"0"}</span>
+            <button type="button" class="btn btn-outline-dark" disabled={count >= myProducts.stock} onClick={() => increase()}>+</button>
+          </div>
+          <hr />
+          <div class='flex-wrap'>
+            <AddProducts id={myProducts.id} quantity={count} />
+            
+              <Link to="/home"><button class="btn btn-secondary mt-3 mb-5">Volver</button></Link>
+            
             </div>
           </div>
-          <button disabled={count<=1} onClick={()=>decrease()}>-</button>
-            <span>{count}</span>
-            <button disabled={count>=30} onClick={()=>increase()}>+</button>
-          <div>
-            <AddProducts id={myProducts.id} quantity={count} />
           </div>
-          <h2>Deje su reseña:</h2>
-          <div className="dejarFeedback">
-            <Feedback
-            model = {myProducts?myProducts.model:"modelo inexistente"}
-            email = {user?user.email:"email invalido"}
-            />
-          </div>
-          <div>
-            <button class="btn btn-dark" onClick={() => handleBack()}>
-              Volver
-            </button>
-          </div>
-          <Footer />
-        </div>
-      }
+          
+          <hr/>
+        
+              <hr/>
+              <h3 class="d-flex fw-normal">Especificación</h3>
+              <br/>
+              <div class='col-lg-6 pl-0 pull-left'>
+                <span class='col-lg-12 pl-0 pr-0' >
+                  <p class='d-flex mb-0'>
+                    <b>Marca </b>
+                     : {myProductWithBrand[0]?.brand}
+                   </p>
+                </span>
+                <span class='col-lg-12 pl-0 pr-0' >
+                  <p class='d-flex mb-0'>
+                    <b>Modelo </b>
+                     : {myProducts.model}
+                   </p>
+                </span>
+                <span class='col-lg-12 pl-0 pr-0' >
+                  <p class='d-flex mb-0'>
+                    <b>Sistema Operativo </b>
+                     : {myProducts && myProducts?.operative_system}
+                   </p>
+                </span>
+                <span class='col-lg-12 pl-0 pr-0' >
+                  <p class='d-flex mb-0'>
+                    <b>Procesador </b>
+                     : {myProducts && myProducts?.cpu}
+                   </p>
+                </span>
+                <span class='col-lg-12 pl-0 pr-0' >
+                  <p class='d-flex mb-0'>
+                    <b>Memoria </b>
+                     : {myProducts && myProducts?.ram} GB
+                   </p>
+                </span>
+                <span class='col-lg-12 pl-0 pr-0' >
+                  <p class='d-flex mb-0'>
+                    <b>Almacenamiento </b>
+                     : {myProducts && myProducts?.capacity} GB
+                   </p>
+                </span>
+                <span class='col-lg-12 pl-0 pr-0' >
+                  <p class='d-flex mb-0'>
+                    <b>Pantalla </b>
+                     : {myProducts && myProducts?.inches}''
+                   </p>
+                </span>
+                <span class='col-lg-12 pl-0 pr-0' >
+                  <p class='d-flex mb-0'>
+                    <b>Camara Principal </b>
+                     : {myProducts && myProducts?.main_camera}px
+                   </p>
+                </span>
+                <span class='col-lg-12 pl-0 pr-0' >
+                  <p class='d-flex mb-0'>
+                    <b>Camara Frontal </b>
+                     : {myProducts && myProducts?.frontal_camera}px
+                   </p>
+                </span>
+                <span class='col-lg-12 pl-0 pr-0' >
+                  <p class='d-flex mb-0'>
+                    <b>Bateria </b>
+                     : {acomodarPrecio(myProducts && myProducts?.battery)} mAH Li-ion
+                   </p>
+                </span>
+                <span class='col-lg-12 pl-0 pr-0' >
+                  <p class='d-flex mb-0'>
+                    <b>Dimensiones </b>
+                     : {myProducts.size} 
+                   </p>
+                </span><span class='col-lg-12 pl-0 pr-0' >
+                  <p class='d-flex mb-0'>
+                    <b>Peso </b>
+                     : {myProducts.weight} g
+                   </p>
+                </span>
+                <hr/>
+                <h3>Queres preguntar algo sobre el producto?</h3>
+                  <Questions
+                  email= {usuarioLogeado.email}
+                  model= {myProducts.model}
+                  />
+                <hr/>
+                <div>
+                  {/* <h3>Preguntas y Respuestas:</h3> */}
+                   <Qas
+                    model= {myProducts.model ? myProducts.model : "modelo invalido"}
+                    email= {usuarioLogeado ? usuarioLogeado.email : "email invalido"}
+                   />
+                </div>
+                <div>
+                  {myFeed.length ? 
+                  <h3>Puntaje: {handlePromedio()}</h3>
+                  : null}
+                  <PhoneFeedbacks
+                       model= {myProducts.model ? myProducts.model : "modelo invalido"}
+                      />
+                    
+                </div>
+                
+              </div>
+              </div>
+      
+      <Footer />
       {/* <div>
             <script src="https://cdn.jsdelivr.net/npm/swiffy-slider@1.5.3/dist/js/swiffy-slider.min.js" ></script>
             <link href="https://cdn.jsdelivr.net/npm/swiffy-slider@1.5.3/dist/css/swiffy-slider.min.css" rel="stylesheet" ></link>
@@ -212,17 +285,14 @@ export default function DetailsPhone(props) {
                 <li><img src="https://source.unsplash.com/nKAglN6HBH8/1600x900" style={{maxWidth: '100%', height: 'auto'}}></img></li>
                 <li><img src="https://source.unsplash.com/E9ZwWcMGzj8/1600x900" style={{maxWidth: '100%', height: 'auto'}}></img></li>
             </ul>
-
             <button type="button" className="slider-nav"></button>
             <button type="button" className="slider-nav slider-nav-next"></button>
-
             <div className="slider-indicators">
                 <button className="active"></button>
                 <button></button>
                 <button></button>
             </div>
 </div>
-
     </div> */}
     </div>
   );
