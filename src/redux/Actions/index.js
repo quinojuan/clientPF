@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 export function getAllProducts() {
   return async function(dispatch) {
     dispatch(setLoading(true));
-    let json = await axios.get("http://localhost:3001/products");
+    let json = await axios.get("https://api-movilgates.herokuapp.com/products");
     dispatch({
       type: "GET_PRODUCTS",
       payload: json.data,
@@ -24,7 +24,7 @@ export function getPhonesById(id) {
   return async function(dispatch) {
     try {
       dispatch(setLoading(true));
-      let json = await axios.get(`http://localhost:3001/products/${id}`);
+      let json = await axios.get(`https://api-movilgates.herokuapp.com/products/${id}`);
       dispatch({
         type: "GET_PHONES_BY_ID",
         payload: json.data,
@@ -96,7 +96,7 @@ export function addUser(payload) {
       /*   const newUser = {
         email: payload.email,
       }; */
-      await axios.post("http://localhost:3001/users", payload);
+      await axios.post("https://api-movilgates.herokuapp.com/users", payload);
     } catch (e) {
       console.log(e);
     }
@@ -107,11 +107,11 @@ export function getUsers() {
   return async function(dispatch) {
     dispatch(setLoading(true));
     let users = await axios
-      .get("http://localhost:3001/users")
+      .get("https://api-movilgates.herokuapp.com/users")
       .then((res) => res.data);
     //console.log(users);
     let firebaseUsers = await axios
-      .get("http://localhost:3001/firebase/allusers")
+      .get("https://api-movilgates.herokuapp.com/firebase/allusers")
       .then((res) => res.data.users);
    // console.log(firebaseUsers, "ACÁ ESTAN LOS UUSARIOS DE FIREBASE");
     users.forEach((user) => {
@@ -133,7 +133,7 @@ export function getUsers() {
 
 export function deleteUser(id) {
   return async function(dispatch) {
-    let json = await axios.delete("http://localhost:3001/users/" + id);
+    let json = await axios.delete("https://api-movilgates.herokuapp.com/users/" + id);
     return dispatch({
       type: "DELETE_USER",
       payload: json.data,
@@ -144,7 +144,7 @@ export function deleteUser(id) {
 export function updateUser(id, payload) {
   return async function() {
     const modifyUser = await axios.put(
-      `http://localhost:3001/users/${id}`,
+      `https://api-movilgates.herokuapp.com/users/${id}`,
       payload
     );
     return modifyUser;
@@ -197,13 +197,13 @@ export const getProductsByNameAndFilters = (search, filters) => async (
   //BUENA MANERA DE UTILIZAR EL AXIOS
   const resultado = await axios
     .get(
-      "http://localhost:3001/products?" +
+      "https://api-movilgates.herokuapp.com/products?" +
         "name=" +
         search.toLowerCase().trim() +
         filterString
     )
-    //'http://localhost:3001/products?' +'name=' +search.toLowerCase().trim() +filterString
-    //http://localhost:3001/products?name=+&ram=&category=Tablets&capacity= EJEMPLO
+    //'https://api-movilgates.herokuapp.com/products?' +'name=' +search.toLowerCase().trim() +filterString
+    //https://api-movilgates.herokuapp.com/products?name=+&ram=&category=Tablets&capacity= EJEMPLO
     .then((res) => res.data);
   dispatch({
     type: "GET_PRODUCTS_BY_NAME_AND_FILTERS",
@@ -213,7 +213,7 @@ export const getProductsByNameAndFilters = (search, filters) => async (
   dispatch(setLoading(false));
 };
 export const getCategories = () => async (dispatch) => {
-  const resultado = await axios("http://localhost:3001/brands").then(
+  const resultado = await axios("https://api-movilgates.herokuapp.com/brands").then(
     (res) => res.data
   );
   dispatch({
@@ -222,7 +222,7 @@ export const getCategories = () => async (dispatch) => {
   });
 };
 export const getRams = () => async (dispatch) => {
-  const json = await axios("http://localhost:3001/rams").then(
+  const json = await axios("https://api-movilgates.herokuapp.com/rams").then(
     (res) => res.data
   );
   dispatch({
@@ -231,7 +231,7 @@ export const getRams = () => async (dispatch) => {
   });
 };
 export const getCapacity = () => async (dispatch) => {
-  const json = await axios("http://localhost:3001/capacities").then(
+  const json = await axios("https://api-movilgates.herokuapp.com/capacities").then(
     (res) => res.data
   );
   dispatch({
@@ -255,7 +255,7 @@ export const handleClearCart = () => {
 };
 export function getPurchase() {
   return async function(dispatch) {
-    let json = await axios.get("http://localhost:3001/purchases");
+    let json = await axios.get("https://api-movilgates.herokuapp.com/purchases");
     return dispatch({
       type: "GET_PURCHASES",
       payload: json.data,
@@ -266,7 +266,7 @@ export function getPurchase() {
 export function postPurchase(payload) {
   return async function(dispatch) {
     const purchase = await axios.post(
-      "http://localhost:3001/purchases",
+      "https://api-movilgates.herokuapp.com/purchases",
       payload
     );
     return purchase;
@@ -276,7 +276,7 @@ export function postPurchase(payload) {
 export function getPurchasesDetail(id) {
   return async function(dispatch) {
     try {
-      var json = await axios.get(`http://localhost:3001/purchases/${id}`);
+      var json = await axios.get(`https://api-movilgates.herokuapp.com/purchases/${id}`);
       return dispatch({
         type: "GET_PURCHASES_ID",
         payload: json.data,
@@ -314,7 +314,7 @@ export function setFinalPrice(payload) {
 export function postFeedback(payload) {
   return async function(dispatch) {
     const feedback = await axios.post(
-      "http://localhost:3001/feedbacks",
+      "https://api-movilgates.herokuapp.com/feedbacks",
       payload
     );
     return dispatch({
@@ -326,7 +326,7 @@ export function postFeedback(payload) {
 
 export function getFeedbacks(payload) {
   return async function(dispatch) {
-    let feedBacks = await axios.get("http://localhost:3001/feedbacks");
+    let feedBacks = await axios.get("https://api-movilgates.herokuapp.com/feedbacks");
     return dispatch({
       type: "GET_FEEDBACKS",
       payload: feedBacks,
@@ -337,7 +337,7 @@ export function getFeedbacks(payload) {
 export function postPhone(payload) {
   return async function(dispatch) {
     const newPhone = await axios.post(
-      "http://localhost:3001/products",
+      "https://api-movilgates.herokuapp.com/products",
       payload
     );
     return newPhone;
@@ -347,7 +347,7 @@ export function postPhone(payload) {
 export function putPhone(id, payload) {
   return async function() {
     const modifyPhone = await axios.put(
-      `http://localhost:3001/products/${id}`,
+      `https://api-movilgates.herokuapp.com/products/${id}`,
       payload
     );
     return modifyPhone;
@@ -357,7 +357,7 @@ export function putPhone(id, payload) {
 export function deletePhone(id) {
   return async function() {
     const deletePhone = await axios.delete(
-      `http://localhost:3001/products/${id}`
+      `https://api-movilgates.herokuapp.com/products/${id}`
     );
     return deletePhone;
   };
@@ -369,26 +369,26 @@ export function preventCartBug() {
 
 export function purchaseMail(payload) {
   return async function() {
-    await axios.post("http://localhost:3001/purchases/purchasemail", payload);
+    await axios.post("https://api-movilgates.herokuapp.com/purchases/purchasemail", payload);
   };
 }
 
 // esta action se va a utilizar al momento de simular el despacho del producto.
 export function shippingMail(payload) {
   return async function() {
-    await axios.post("http://localhost:3001/purchases/shippingmail", payload);
+    await axios.post("https://api-movilgates.herokuapp.com/purchases/shippingmail", payload);
   };
 }
 
 export function postQa(payload) {
   return async function() {
-    await axios.post("http://localhost:3001/qas", payload);
+    await axios.post("https://api-movilgates.herokuapp.com/qas", payload);
   };
 }
 
 export function getQas() {
   return async function(dispatch) {
-    let qas = await axios.get("http://localhost:3001/qas");
+    let qas = await axios.get("https://api-movilgates.herokuapp.com/qas");
     return dispatch({
       type: "GET_QAS",
       payload: qas.data,
@@ -398,7 +398,7 @@ export function getQas() {
 
 export function updateQa(id, payload) {
   return async function(dispatch) {
-    let updateQa = await axios.put(`http://localhost:3001/qas/${id}`, payload);
+    let updateQa = await axios.put(`https://api-movilgates.herokuapp.com/qas/${id}`, payload);
     return dispatch({
       type: "UPDATE_QA",
       payload: updateQa.data,
@@ -422,11 +422,11 @@ export function addDisplayName(payload) {
 
 export function addUserToDb(payload) {
   return async function() {
-    await axios.post("http://localhost:3001/users", payload);
+    await axios.post("https://api-movilgates.herokuapp.com/users", payload);
   };
 }
 export const setUserDisplayName = (email) => async (dispatch) => {
-  const user = await axios.get(`http://localhost:3001/users/email/${email}`);
+  const user = await axios.get(`https://api-movilgates.herokuapp.com/users/email/${email}`);
   return dispatch({
     type: "ADD_DISPLAY_NAME",
     payload: user.data,
@@ -434,7 +434,7 @@ export const setUserDisplayName = (email) => async (dispatch) => {
 };
 export const setAdmin = (id) => async (dispatch) => {
   let user = await axios
-    .get(`http://localhost:3001/users/${id}`)
+    .get(`https://api-movilgates.herokuapp.com/users/${id}`)
     .then((response) => response.data);
   user.admin = !user.admin;
   if (user.admin)
@@ -450,7 +450,7 @@ export const setAdmin = (id) => async (dispatch) => {
       "info"
     );
 
-  await axios.put("http://localhost:3001/users/" + id, user);
+  await axios.put("https://api-movilgates.herokuapp.com/users/" + id, user);
   dispatch({
     type: "MODIFY_USER",
     payload: user,
@@ -459,7 +459,7 @@ export const setAdmin = (id) => async (dispatch) => {
 };
 export const setActive = (id) => async (dispatch) => {
   let user = await axios
-    .get(`http://localhost:3001/users/${id}`)
+    .get(`https://api-movilgates.herokuapp.com/users/${id}`)
     .then((response) => response.data);
   user.active = !user.active;
   if (user.active)
@@ -474,7 +474,7 @@ export const setActive = (id) => async (dispatch) => {
       `El usuario con el email ${user.email} ahora está baneado!`,
       "warning"
     );
-  await axios.put("http://localhost:3001/users/" + id, user);
+  await axios.put("https://api-movilgates.herokuapp.com/users/" + id, user);
   dispatch({
     type: "MODIFY_USER",
     payload: user,
