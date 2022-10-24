@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import NavBar from "../NavBar/NavBar";
 import Footer from "../Footer/Footer";
-import { getAllProducts , deletePhone} from "../../redux/Actions/index"
-import { useDispatch, useSelector } from 'react-redux';
+import { getAllProducts , deletePhone, getUsers} from "../../redux/Actions/index"
+import { useDispatch, useSelector} from 'react-redux';
 import { Navigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+
 
 export default function PhonesTable() {
 
@@ -16,12 +17,17 @@ export default function PhonesTable() {
     
     useEffect(() => {
         dispatch(getAllProducts())
+        dispatch(getUsers())
     }, [dispatch])
      
     const handleDelete = (e) => {
         dispatch(deletePhone(e))
         document.location.reload()
     }
+    
+    function handlePanel() {
+        navigate("/adminpages");
+      }
 
     return (
         <div>
@@ -65,6 +71,13 @@ export default function PhonesTable() {
                         ))}
                     </tbody>
                 </table>
+                <button
+              type="button"
+              class="btn btn-secondary"
+              onClick={(e) => handlePanel(e)}
+            >
+              Volver al Panel
+            </button>
             </div>
             <Footer />
         </div>

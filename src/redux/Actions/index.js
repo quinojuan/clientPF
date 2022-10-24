@@ -91,16 +91,63 @@ export const setFilter = (filter, filterName) => (dispatch) => {
 };
 
 export function addUser(payload) {
-  console.log("Payload en addUser-actions", payload);
   return async function() {
     try {
-      const newUser = {
+      /*   const newUser = {
         email: payload.email,
-      };
-      await axios.post("https://api-movilgates.herokuapp.com/users", newUser);
+      }; */
+      await axios.post("https://api-movilgates.herokuapp.com/users", payload);
     } catch (e) {
       console.log(e);
     }
+  };
+}
+
+export function getUsers() {
+  return async function(dispatch) {
+    dispatch(setLoading(true));
+    let users = await axios
+      .get("https://api-movilgates.herokuapp.com/users")
+      .then((res) => res.data);
+    //console.log(users);
+    let firebaseUsers = await axios
+      .get("https://api-movilgates.herokuapp.com/firebase/allusers")
+      .then((res) => res.data.users);
+   // console.log(firebaseUsers, "ACÁ ESTAN LOS UUSARIOS DE FIREBASE");
+    users.forEach((user) => {
+      let finded = firebaseUsers.find((u) => u.email === user.email);
+      if (finded) user.emailVerified = finded.emailVerified;
+    });
+    users.sort((a, b) => {
+      if (a.email > b.email) return 1;
+      if (a.email < b.email) return -1;
+      return 0;
+    });
+    dispatch({
+      type: "GET_USERS",
+      payload: users,
+    });
+    dispatch(setLoading(false));
+  };
+}
+
+export function deleteUser(id) {
+  return async function(dispatch) {
+    let json = await axios.delete("https://api-movilgates.herokuapp.com/users/" + id);
+    return dispatch({
+      type: "DELETE_USER",
+      payload: json.data,
+    });
+  };
+}
+
+export function updateUser(id, payload) {
+  return async function() {
+    const modifyUser = await axios.put(
+      `https://api-movilgates.herokuapp.com/users/${id}`,
+      payload
+    );
+    return modifyUser;
   };
 }
 
@@ -210,7 +257,7 @@ export function getPurchase() {
   return async function(dispatch) {
     let json = await axios.get("https://api-movilgates.herokuapp.com/purchases");
     return dispatch({
-      type: "GET_PURCHASE",
+      type: "GET_PURCHASES",
       payload: json.data,
     });
   };
@@ -218,7 +265,6 @@ export function getPurchase() {
 
 export function postPurchase(payload) {
   return async function(dispatch) {
-    console.log(payload, "ACTION DE POSTPURCHASE");
     const purchase = await axios.post(
       "https://api-movilgates.herokuapp.com/purchases",
       payload
@@ -226,6 +272,21 @@ export function postPurchase(payload) {
     return purchase;
   };
 }
+
+export function getPurchasesDetail(id) {
+  return async function(dispatch) {
+    try {
+      var json = await axios.get(`https://api-movilgates.herokuapp.com/purchases/${id}`);
+      return dispatch({
+        type: "GET_PURCHASES_ID",
+        payload: json.data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
 export function getPurchaseRepeat(payload) {
   return {
     type: "GET_PURCHASE_REPEAT",
@@ -252,7 +313,6 @@ export function setFinalPrice(payload) {
 }
 export function postFeedback(payload) {
   return async function(dispatch) {
-    console.log(payload, "ACTION DE FEEDBACKS");
     const feedback = await axios.post(
       "https://api-movilgates.herokuapp.com/feedbacks",
       payload
@@ -265,7 +325,6 @@ export function postFeedback(payload) {
 }
 
 export function getFeedbacks(payload) {
-  console.log("FEEDBACK A ENVIAR:", payload);
   return async function(dispatch) {
     let feedBacks = await axios.get("https://api-movilgates.herokuapp.com/feedbacks");
     return dispatch({
@@ -319,4 +378,118 @@ export function shippingMail(payload) {
   return async function() {
     await axios.post("https://api-movilgates.herokuapp.com/purchases/shippingmail", payload);
   };
+}
+
+export function postQa(payload) {
+  return async function() {
+    await axios.post("https://api-movilgates.herokuapp.com/qas", payload);
+  };
+}
+
+export function getQas() {
+  return async function(dispatch) {
+    let qas = await axios.get("https://api-movilgates.herokuapp.com/qas");
+    return dispatch({
+      type: "GET_QAS",
+      payload: qas.data,
+    });
+  };
+}
+
+export function updateQa(id, payload) {
+  return async function(dispatch) {
+    let updateQa = await axios.put(`https://api-movilgates.herokuapp.com/qas/${id}`, payload);
+    return dispatch({
+      type: "UPDATE_QA",
+      payload: updateQa.data,
+    });
+  };
+}
+
+export function getUserData(payload) {
+  return {
+    type: "GET_USER_DATA",
+    payload,
+  };
+}
+
+export function addDisplayName(payload) {
+  return {
+    type: "ADD_DISPLAY_NAME",
+    payload,
+  };
+}
+
+export function addUserToDb(payload) {
+  return async function() {
+    await axios.post("https://api-movilgates.herokuapp.com/users", payload);
+  };
+}
+export const setUserDisplayName = (email) => async (dispatch) => {
+  const user = await axios.get(`https://api-movilgates.herokuapp.com/users/email/${email}`);
+  return dispatch({
+    type: "ADD_DISPLAY_NAME",
+    payload: user.data,
+  });
+};
+export const setAdmin = (id) => async (dispatch) => {
+  let user = await axios
+    .get(`https://api-movilgates.herokuapp.com/users/${id}`)
+    .then((response) => response.data);
+  user.admin = !user.admin;
+  if (user.admin)
+    Swal.fire(
+      "Nuevo admin!",
+      `El usuario con el email ${user.email} es un nuevo admin!`,
+      "success"
+    );
+  else
+    Swal.fire(
+      "Quitado admin",
+      `El usuario con el email ${user.email} ya no es más un admin!`,
+      "info"
+    );
+
+  await axios.put("https://api-movilgates.herokuapp.com/users/" + id, user);
+  dispatch({
+    type: "MODIFY_USER",
+    payload: user,
+  });
+  dispatch(getUsers());
+};
+export const setActive = (id) => async (dispatch) => {
+  let user = await axios
+    .get(`https://api-movilgates.herokuapp.com/users/${id}`)
+    .then((response) => response.data);
+  user.active = !user.active;
+  if (user.active)
+    Swal.fire(
+      "Desbaneado!",
+      `El usuario con el email ${user.email} ya no está más baneado!`,
+      "info"
+    );
+  else
+    Swal.fire(
+      "Baneado!",
+      `El usuario con el email ${user.email} ahora está baneado!`,
+      "warning"
+    );
+  await axios.put("https://api-movilgates.herokuapp.com/users/" + id, user);
+  dispatch({
+    type: "MODIFY_USER",
+    payload: user,
+  });
+  dispatch(getUsers());
+};
+
+export function cleanSearch() {
+  return {
+    type: "clean_state_search",
+  };
+}
+export function setCantidad(payload) {
+  return{
+    type: "setCantidad",
+    payload
+  }
 }
