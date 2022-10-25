@@ -1,10 +1,12 @@
 import { async } from "@firebase/util";
 import axios from "axios";
 import Swal from "sweetalert2";
+const {backUrl} = process.env
+
 export function getAllProducts() {
   return async function(dispatch) {
     dispatch(setLoading(true));
-    let json = await axios.get("https://api-movilgates.herokuapp.com/products");
+    let json = await axios.get(`${backUrl}/products`);
     dispatch({
       type: "GET_PRODUCTS",
       payload: json.data,
@@ -24,7 +26,7 @@ export function getPhonesById(id) {
   return async function(dispatch) {
     try {
       dispatch(setLoading(true));
-      let json = await axios.get(`https://api-movilgates.herokuapp.com/products/${id}`);
+      let json = await axios.get(`${backUrl}/products/${id}`);
       dispatch({
         type: "GET_PHONES_BY_ID",
         payload: json.data,
@@ -96,7 +98,7 @@ export function addUser(payload) {
       /*   const newUser = {
         email: payload.email,
       }; */
-      await axios.post("https://api-movilgates.herokuapp.com/users", payload);
+      await axios.post(`${backUrl}/users`, payload);
     } catch (e) {
       console.log(e);
     }
@@ -107,11 +109,11 @@ export function getUsers() {
   return async function(dispatch) {
     dispatch(setLoading(true));
     let users = await axios
-      .get("https://api-movilgates.herokuapp.com/users")
+      .get(`${backUrl}/users`)
       .then((res) => res.data);
     //console.log(users);
     let firebaseUsers = await axios
-      .get("https://api-movilgates.herokuapp.com/firebase/allusers")
+      .get(`${backUrl}/firebase/allusers`)
       .then((res) => res.data.users);
    // console.log(firebaseUsers, "ACÁ ESTAN LOS UUSARIOS DE FIREBASE");
     users.forEach((user) => {
@@ -133,7 +135,7 @@ export function getUsers() {
 
 export function deleteUser(id) {
   return async function(dispatch) {
-    let json = await axios.delete("https://api-movilgates.herokuapp.com/users/" + id);
+    let json = await axios.delete(`${backUrl}/users/` + id);
     return dispatch({
       type: "DELETE_USER",
       payload: json.data,
@@ -144,7 +146,7 @@ export function deleteUser(id) {
 export function updateUser(id, payload) {
   return async function() {
     const modifyUser = await axios.put(
-      `https://api-movilgates.herokuapp.com/users/${id}`,
+      `${backUrl}/users/${id}`,
       payload
     );
     return modifyUser;
@@ -197,13 +199,13 @@ export const getProductsByNameAndFilters = (search, filters) => async (
   //BUENA MANERA DE UTILIZAR EL AXIOS
   const resultado = await axios
     .get(
-      "https://api-movilgates.herokuapp.com/products?" +
+      `${backUrl}/products?` +
         "name=" +
         search.toLowerCase().trim() +
         filterString
     )
-    //'https://api-movilgates.herokuapp.com/products?' +'name=' +search.toLowerCase().trim() +filterString
-    //https://api-movilgates.herokuapp.com/products?name=+&ram=&category=Tablets&capacity= EJEMPLO
+    //'${backUrl}/products?' +'name=' +search.toLowerCase().trim() +filterString
+    //${backUrl}/products?name=+&ram=&category=Tablets&capacity= EJEMPLO
     .then((res) => res.data);
   dispatch({
     type: "GET_PRODUCTS_BY_NAME_AND_FILTERS",
@@ -213,7 +215,7 @@ export const getProductsByNameAndFilters = (search, filters) => async (
   dispatch(setLoading(false));
 };
 export const getCategories = () => async (dispatch) => {
-  const resultado = await axios("https://api-movilgates.herokuapp.com/brands").then(
+  const resultado = await axios(`${backUrl}/brands`).then(
     (res) => res.data
   );
   dispatch({
@@ -222,7 +224,7 @@ export const getCategories = () => async (dispatch) => {
   });
 };
 export const getRams = () => async (dispatch) => {
-  const json = await axios("https://api-movilgates.herokuapp.com/rams").then(
+  const json = await axios(`${backUrl}/rams`).then(
     (res) => res.data
   );
   dispatch({
@@ -231,7 +233,7 @@ export const getRams = () => async (dispatch) => {
   });
 };
 export const getCapacity = () => async (dispatch) => {
-  const json = await axios("https://api-movilgates.herokuapp.com/capacities").then(
+  const json = await axios(`${backUrl}/capacities`).then(
     (res) => res.data
   );
   dispatch({
@@ -255,7 +257,7 @@ export const handleClearCart = () => {
 };
 export function getPurchase() {
   return async function(dispatch) {
-    let json = await axios.get("https://api-movilgates.herokuapp.com/purchases");
+    let json = await axios.get(`${backUrl}/purchases`);
     return dispatch({
       type: "GET_PURCHASES",
       payload: json.data,
@@ -266,7 +268,7 @@ export function getPurchase() {
 export function postPurchase(payload) {
   return async function(dispatch) {
     const purchase = await axios.post(
-      "https://api-movilgates.herokuapp.com/purchases",
+      `${backUrl}/purchases`,
       payload
     );
     return purchase;
@@ -276,7 +278,7 @@ export function postPurchase(payload) {
 export function getPurchasesDetail(id) {
   return async function(dispatch) {
     try {
-      var json = await axios.get(`https://api-movilgates.herokuapp.com/purchases/${id}`);
+      var json = await axios.get(`${backUrl}/purchases/${id}`);
       return dispatch({
         type: "GET_PURCHASES_ID",
         payload: json.data,
@@ -314,7 +316,7 @@ export function setFinalPrice(payload) {
 export function postFeedback(payload) {
   return async function(dispatch) {
     const feedback = await axios.post(
-      "https://api-movilgates.herokuapp.com/feedbacks",
+      `${backUrl}/feedbacks`,
       payload
     );
     return dispatch({
@@ -326,7 +328,7 @@ export function postFeedback(payload) {
 
 export function getFeedbacks(payload) {
   return async function(dispatch) {
-    let feedBacks = await axios.get("https://api-movilgates.herokuapp.com/feedbacks");
+    let feedBacks = await axios.get(`${backUrl}/feedbacks`);
     return dispatch({
       type: "GET_FEEDBACKS",
       payload: feedBacks,
@@ -337,7 +339,7 @@ export function getFeedbacks(payload) {
 export function postPhone(payload) {
   return async function(dispatch) {
     const newPhone = await axios.post(
-      "https://api-movilgates.herokuapp.com/products",
+      `${backUrl}/products`,
       payload
     );
     return newPhone;
@@ -347,7 +349,7 @@ export function postPhone(payload) {
 export function putPhone(id, payload) {
   return async function() {
     const modifyPhone = await axios.put(
-      `https://api-movilgates.herokuapp.com/products/${id}`,
+      `${backUrl}/products/${id}`,
       payload
     );
     return modifyPhone;
@@ -357,7 +359,7 @@ export function putPhone(id, payload) {
 export function deletePhone(id) {
   return async function() {
     const deletePhone = await axios.delete(
-      `https://api-movilgates.herokuapp.com/products/${id}`
+      `${backUrl}/products/${id}`
     );
     return deletePhone;
   };
@@ -369,26 +371,26 @@ export function preventCartBug() {
 
 export function purchaseMail(payload) {
   return async function() {
-    await axios.post("https://api-movilgates.herokuapp.com/purchases/purchasemail", payload);
+    await axios.post(`${backUrl}/purchases/purchasemail`, payload);
   };
 }
 
 // esta action se va a utilizar al momento de simular el despacho del producto.
 export function shippingMail(payload) {
   return async function() {
-    await axios.post("https://api-movilgates.herokuapp.com/purchases/shippingmail", payload);
+    await axios.post(`${backUrl}/purchases/shippingmail`, payload);
   };
 }
 
 export function postQa(payload) {
   return async function() {
-    await axios.post("https://api-movilgates.herokuapp.com/qas", payload);
+    await axios.post(`${backUrl}/qas`, payload);
   };
 }
 
 export function getQas() {
   return async function(dispatch) {
-    let qas = await axios.get("https://api-movilgates.herokuapp.com/qas");
+    let qas = await axios.get(`${backUrl}/qas`);
     return dispatch({
       type: "GET_QAS",
       payload: qas.data,
@@ -398,7 +400,7 @@ export function getQas() {
 
 export function updateQa(id, payload) {
   return async function(dispatch) {
-    let updateQa = await axios.put(`https://api-movilgates.herokuapp.com/qas/${id}`, payload);
+    let updateQa = await axios.put(`${backUrl}/qas/${id}`, payload);
     return dispatch({
       type: "UPDATE_QA",
       payload: updateQa.data,
@@ -422,11 +424,11 @@ export function addDisplayName(payload) {
 
 export function addUserToDb(payload) {
   return async function() {
-    await axios.post("https://api-movilgates.herokuapp.com/users", payload);
+    await axios.post(`${backUrl}/users`, payload);
   };
 }
 export const setUserDisplayName = (email) => async (dispatch) => {
-  const user = await axios.get(`https://api-movilgates.herokuapp.com/users/email/${email}`);
+  const user = await axios.get(`${backUrl}/users/email/${email}`);
   return dispatch({
     type: "ADD_DISPLAY_NAME",
     payload: user.data,
@@ -434,7 +436,7 @@ export const setUserDisplayName = (email) => async (dispatch) => {
 };
 export const setAdmin = (id) => async (dispatch) => {
   let user = await axios
-    .get(`https://api-movilgates.herokuapp.com/users/${id}`)
+    .get(`${backUrl}/users/${id}`)
     .then((response) => response.data);
   user.admin = !user.admin;
   if (user.admin)
@@ -450,7 +452,7 @@ export const setAdmin = (id) => async (dispatch) => {
       "info"
     );
 
-  await axios.put("https://api-movilgates.herokuapp.com/users/" + id, user);
+  await axios.put(`${backUrl}/users/` + id, user);
   dispatch({
     type: "MODIFY_USER",
     payload: user,
@@ -459,7 +461,7 @@ export const setAdmin = (id) => async (dispatch) => {
 };
 export const setActive = (id) => async (dispatch) => {
   let user = await axios
-    .get(`https://api-movilgates.herokuapp.com/users/${id}`)
+    .get(`${backUrl}/users/${id}`)
     .then((response) => response.data);
   user.active = !user.active;
   if (user.active)
@@ -474,7 +476,7 @@ export const setActive = (id) => async (dispatch) => {
       `El usuario con el email ${user.email} ahora está baneado!`,
       "warning"
     );
-  await axios.put("https://api-movilgates.herokuapp.com/users/" + id, user);
+  await axios.put(`${backUrl}/users/` + id, user);
   dispatch({
     type: "MODIFY_USER",
     payload: user,
